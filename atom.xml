@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>http://kennfalcon.space</id>
-    <title>Gridea</title>
-    <updated>2020-02-26T00:46:56.852Z</updated>
+    <title>幽轩Kenn</title>
+    <updated>2020-02-26T01:23:36.701Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="http://kennfalcon.space"/>
     <link rel="self" href="http://kennfalcon.space/atom.xml"/>
     <subtitle>温故而知新</subtitle>
     <logo>http://kennfalcon.space/images/avatar.png</logo>
     <icon>http://kennfalcon.space/favicon.ico</icon>
-    <rights>All rights reserved 2020, Gridea</rights>
+    <rights>All rights reserved 2020, 幽轩Kenn</rights>
     <entry>
         <title type="html"><![CDATA[Hello Gridea]]></title>
         <id>http://kennfalcon.space/post/hello-gridea/</id>
@@ -40,6 +40,188 @@
 <p>未来，它一定会成为你离不开的伙伴</p>
 <p>尽情发挥你的才华吧！</p>
 <p>😘 Enjoy~</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Elasticsearch Hanlp Plugin]]></title>
+        <id>http://kennfalcon.space/post/elasticsearch-hanlp-plugin/</id>
+        <link href="http://kennfalcon.space/post/elasticsearch-hanlp-plugin/">
+        </link>
+        <updated>2018-03-10T01:16:17.000Z</updated>
+        <content type="html"><![CDATA[<!-- more -->
+<p>摘要：Elasticsearch是基于Lucene的开源分布式搜索引擎。Hanlp是由一系列模型与算法组成的Java工具包，用于自然语言处理。</p>
+<h2 id="插件说明">插件说明</h2>
+<p>插件是基于Hanlp的分词的分词算法所开发的Elasticsearch插件，目前已基本支持Hanlp开源出的分词算法，分词有如下几类：</p>
+<table>
+<thead>
+<tr>
+<th>Hanlp分词</th>
+<th>Elasticsearch analyzer name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>默认分词</td>
+<td>hanlp</td>
+</tr>
+<tr>
+<td>标准分词</td>
+<td>hanlp_standard</td>
+</tr>
+<tr>
+<td>索引分词</td>
+<td>hanlp_index</td>
+</tr>
+<tr>
+<td>NLP分词</td>
+<td>hanlp_nlp</td>
+</tr>
+<tr>
+<td>N最短路分词</td>
+<td>hanlp_n_short</td>
+</tr>
+<tr>
+<td>最短路分词</td>
+<td>hanlp_dijkstra</td>
+</tr>
+<tr>
+<td>CRF分词</td>
+<td>hanlp_crf</td>
+</tr>
+<tr>
+<td>极速词典分词</td>
+<td>hanlp_speed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="安装说明">安装说明</h2>
+<h3 id="插件地址">插件地址</h3>
+<p>https://github.com/KennFalcon/elasticsearch-analysis-hanlp</p>
+<h3 id="版本对应">版本对应</h3>
+<p>下载安装ES对应Plugin Release版本</p>
+<table>
+<thead>
+<tr>
+<th>Plugin version</th>
+<th>Elastic version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>master</td>
+<td>6.x</td>
+</tr>
+<tr>
+<td>6.2.2</td>
+<td>6.2.2</td>
+</tr>
+<tr>
+<td>5.2.2</td>
+<td>5.2.2</td>
+</tr>
+</tbody>
+</table>
+<p>目前只支持两个版本，如果有需要的同学，可以修改Elasticsearch相关jar包版本，重新打包编译。</p>
+<h3 id="安装过程">安装过程</h3>
+<ul>
+<li>
+<p><strong>安装方式</strong></p>
+<ol>
+<li>
+<p>方式一</p>
+<p>a. 下载对应的release安装包</p>
+<p>b. 将相关内容解压至ES_HOME/plugins/analysis-hanlp</p>
+<p>c. 将config目录下的文件移动至ES_HOME/config/analysis-hanlp</p>
+<p>d. 解压出的data目录为词典目录</p>
+</li>
+<li>
+<p>方式二</p>
+<p>使用elasticsearch插件脚本安装command如下：</p>
+</li>
+</ol>
+</li>
+</ul>
+<pre><code>./bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v6.2.2/elasticsearch-analysis-hanlp-6.2.2.zip
+</code></pre>
+<ul>
+<li>
+<p><strong>安装数据包</strong></p>
+<p>release包中存放的为HanLP源码中默认的分词数据，若要下载完整版数据包，请查看https://github.com/hankcs/HanLP/releases</p>
+<p>数据包目录：<em>${ES_HOME}</em>/plugins/analysis-hanlp/config</p>
+</li>
+<li>
+<p><strong>增加文件读取权限</strong></p>
+<p>修改 ES_HOME/config 目录下的 jvm.options 文件添加一行（读取hanlp.properties配置文件需要）</p>
+</li>
+</ul>
+<pre><code>-Djava.security.policy=file:///${ES_HOME}/plugins/analysis-hanlp/plugin-security.policy
+</code></pre>
+<ul>
+<li><strong>重启Elasticsearch</strong></li>
+</ul>
+<h3 id="样例">样例</h3>
+<pre><code>POST http://localhost:9200/twitter2/_analyze
+{
+  &quot;text&quot;: &quot;美国阿拉斯加州发生8.0级地震&quot;,
+  &quot;tokenizer&quot;: &quot;hanlp&quot;
+}
+</code></pre>
+<pre><code>{
+  &quot;tokens&quot; : [
+    {
+      &quot;token&quot; : &quot;美国&quot;,
+      &quot;start_offset&quot; : 0,
+      &quot;end_offset&quot; : 2,
+      &quot;type&quot; : &quot;nsf&quot;,
+      &quot;position&quot; : 0
+    },
+    {
+      &quot;token&quot; : &quot;阿拉斯加州&quot;,
+      &quot;start_offset&quot; : 0,
+      &quot;end_offset&quot; : 5,
+      &quot;type&quot; : &quot;nsf&quot;,
+      &quot;position&quot; : 1
+    },
+    {
+      &quot;token&quot; : &quot;发生&quot;,
+      &quot;start_offset&quot; : 0,
+      &quot;end_offset&quot; : 2,
+      &quot;type&quot; : &quot;v&quot;,
+      &quot;position&quot; : 2
+    },
+    {
+      &quot;token&quot; : &quot;8.0&quot;,
+      &quot;start_offset&quot; : 0,
+      &quot;end_offset&quot; : 3,
+      &quot;type&quot; : &quot;m&quot;,
+      &quot;position&quot; : 3
+    },
+    {
+      &quot;token&quot; : &quot;级&quot;,
+      &quot;start_offset&quot; : 0,
+      &quot;end_offset&quot; : 1,
+      &quot;type&quot; : &quot;q&quot;,
+      &quot;position&quot; : 4
+    },
+    {
+      &quot;token&quot; : &quot;地震&quot;,
+      &quot;start_offset&quot; : 0,
+      &quot;end_offset&quot; : 2,
+      &quot;type&quot; : &quot;n&quot;,
+      &quot;position&quot; : 5
+    }
+  ]
+}
+</code></pre>
+<h3 id="其他说明">其他说明</h3>
+<ul>
+<li>
+<p>插件目前支持自定义词典热更新</p>
+</li>
+<li>
+<p>目前自定义词典因为构建时间长，所以安装插件后，启动Elasticsearch可能需要5分钟左右的时间构建词典</p>
+</li>
+</ul>
 ]]></content>
     </entry>
 </feed>
